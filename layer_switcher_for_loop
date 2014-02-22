@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Layer switch</title>
+<link href='http://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.css' rel=stylesheet />
+<script src='http://api.tiles.mapbox.com/mapbox.js/v1.6.1/mapbox.js'></script>
+<style>.map{position:absolute;width:100%;height:100%;top:0;left:0;right:0;bottom:0}.layers{background:#fff;position:absolute;z-index:1000;width:120px;top:10px;left:50px;border:1px solid #eee;-webkit-border-radius:2px;border-radius:2px}.layers a{padding:10px;display:block;border-bottom:1px solid #eee}.layers a:hover,.layers a.active{background-color:#f8f8f8}.layers a:last-child{border-bottom:none}</style></head>
+<body>
+<div id=map class=map>
+<div id=layers class=layers></div>
+</div>
+<script>
+ //on programme la carte qui servira de fond de carte. Elle sera inchangée pendant le switch.
+var map = L.mapbox.map('map', 'raphadasilva.had5l5i7', {
+    zoomControl: false
+}).setView([47.88, 5.5613], 7);
+
+
+//on met dans un tableau les id des tileLayers/gridLayers qui changeront pendant le switch
+var maps = [{
+    id: 'raphadasilva.h5o8i9lo'
+}, {
+    id: 'raphadasilva.h5oa0na3'
+}];
+var layers = document.getElementById('layers');
+var gridLayer;
+
+//le gridControl correspond à la légende qui s'affiche en haut à droite
+var gridControl;
+var layer;
+
+// dans une boucle for, on créée un lien pour une entrée du tableau initiale
+for (var i = 0; i < maps.length; i++) {
+    var link = document.createElement('a');
+    link.href = '#';
+    link.innerHTML = 2014 - 5 * (i + 1);
+    link.setAttribute('data-layer', i);
+    link.onclick = function () {
+    
+    //à chaque clien sur un lien, on commence par changer le statut CSS
+        if (/active/.test(this.className)) {
+            this.className = this.className.replace(/active/, '').replace(/\s\s*$/, '');
+        } else {
+            var siblings = layers.getElementsByTagName('a');
+            for (var i = 0; i < siblings.length; i++) {
+                siblings[i].className = siblings[i].className.replace(/active/, '').replace(/\s\s*$/, '');
+            };
+            this.className += ' active';
+            var m = maps[this.getAttribute('data-layer')];
+          
+            // on vire le tileLayer, le gridLaye et le gridControl
+            if (layer) map.removeLayer(layer);
+            if (gridLayer) map.removeLayer(gridLayer);
+            if (gridControl) map.removeControl(gridControl);
+            
+            //on met à jour les variables
+            gridLayer = L.mapbox.gridLayer(m.id);
+            layer = L.mapbox.tileLayer(m.id);
+            gridControl = L.mapbox.gridControl(gridLayer);
+            
+            //on les ajoute à la carte
+            map.addLayer(layer);
+            map.addLayer(gridLayer);
+            map.addControl(gridControl);
+        }
+        return false;
+    };
+    if (i === 0) link.onclick();
+    layers.appendChild(link);
+}
+
+</script>
+</body>
+</html>
+<pre><code></code>
+</pre>
