@@ -1,4 +1,4 @@
-mapbox_switcher_layers
+Des switchers sous mapbox.js
 ======================
 
 Vous trouverez ci-joints quelques exemples de switchers programmés sous mapbox.js. Le principe était de comparer sur une même aire géographique plusieurs scrutins.
